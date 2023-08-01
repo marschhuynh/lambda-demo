@@ -1,0 +1,18 @@
+{
+  "name": "@plaid-demo/function",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "NODE_PATH=/Users/marsch/Projects/plaid-demo/packages/layers/src SLS_DEBUG=* serverless offline --ignoreJWTSignature --stage local",
+    "deploy:dev": "SLS_DEBUG=* serverless deploy --stage dev",
+    "deploy:qa": "SLS_DEBUG=* serverless deploy --stage qa",
+    "deploy:local": "SLS_DEBUG=* serverless deploy --stage local"
+  },
+  "devDependencies": {
+    "serverless-offline": "^12.0.4"
+  },
+  "dependencies": {
+    "serverless": "^3.33.0"
+  }
+}

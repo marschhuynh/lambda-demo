@@ -1,0 +1,21 @@
+service: plaid-layer
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  profile: plaid-demo
+
+layers:
+  plaid:
+    name: PlaidLayer-${sls:stage}
+    path: src
+
+resources:
+  Outputs:
+    PlaidLayerExport:
+      Value:
+        Ref: PlaidLambdaLayer
+      Export:
+        Name: Plaid-${sls:stage}

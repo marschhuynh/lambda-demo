@@ -1,0 +1,22 @@
+Resources:
+  UserClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: ui-client
+      GenerateSecret: false
+      UserPoolId:
+        Ref: UserPool
+      AccessTokenValidity: 5
+      IdTokenValidity: 5
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+      CallbackURLs:
+        - http://localhost:3000/auth
+      AllowedOAuthFlows:
+        - code
+        - implicit
+      AllowedOAuthScopes:
+        - openid
+      SupportedIdentityProviders:
+        - COGNITO
+      AllowedOAuthFlowsUserPoolClient: True

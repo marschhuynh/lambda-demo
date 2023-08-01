@@ -1,0 +1,55 @@
+home:
+  handler: plaid/info.handler
+  package:
+    patterns:
+      - plaid/info.js
+  events:
+    - httpApi:
+        path: /info
+        method: post
+    - httpApi:
+        path: /info
+        method: get
+  layers:
+    - "${cf:plaid-layer-${sls:stage}.PlaidLayerExport}"
+
+test:
+  handler: plaid/test.handler
+  package:
+    patterns:
+      - plaid/test.js1
+  events:
+    - httpApi:
+        path: /test
+        method: get
+        # authorizer: serviceAuthorizer
+
+testPost:
+  handler: plaid/test.handler
+  package:
+    patterns:
+      - plaid/test.js1
+  events:
+    - httpApi:
+        path: /test
+        method: post
+        # authorizer: serviceAuthorizer
+
+  layers:
+    - "${cf:plaid-layer-${sls:stage}.PlaidLayerExport}"
+
+createTokenLink:
+  handler: plaid/create_link_token.handler
+  package:
+    patterns:
+      - plaid/create_link_token.js
+  events:
+    - httpApi:
+        path: /create_link_token
+        method: post
+    - httpApi:
+        path: /create_link_token
+        method: get
+
+  layers:
+    - "${cf:plaid-layer-${sls:stage}.PlaidLayerExport}"

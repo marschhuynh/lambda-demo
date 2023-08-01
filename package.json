@@ -1,0 +1,21 @@
+{
+  "name": "plaid-demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start-app": "yarn workspace plaid_react_quickstart start",
+    "start-function": "yarn workspace @plaid-demo/function dev",
+    "deploy:layer": "yarn workspace @plaid-demo/layer deploy",
+    "deploy:function": "yarn workspace @plaid-demo/function deploy"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "dependencies": {
+    "serverless": "^3.33.0"
+  }
+}

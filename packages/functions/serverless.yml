@@ -1,0 +1,88 @@
+service: plaid-connector
+frameworkVersion: "3"
+
+useDotenv: true
+configValidationMode: error
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stackName: plaid-connector-${sls:stage}
+  profile: plaid-demo
+  environment:
+    LAYER_PATH: ${env:LAYER_PATH, '/opt'}
+    PLAID_PRODUCTS: ${env:PLAID_PRODUCTS}
+    PLAID_COUNTRY_CODES: ${env:PLAID_COUNTRY_CODES}
+    PLAID_CLIENT_ID: ${env:PLAID_CLIENT_ID}
+    PLAID_SECRET: ${env:PLAID_SECRET}
+    PLAID_ENV: ${env:PLAID_ENV, 'sandbox'}
+    PLAID_REDIRECT_URI: ${env:PLAID_REDIRECT_URI, 'http://localhost:3000/'}
+    API_GATEWAY_ID: !Ref HttpApi
+    AWS_REGION: ${env:AWS_REGION}
+  httpApi:
+    cors:
+      allowedOrigins:
+        - http://localhost:3000
+      allowedHeaders:
+        - Content-Type
+        - Authorization
+      allowedMethods:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - OPTIONS
+      allowCredentials: true
+      exposedResponseHeaders:
+      maxAge: 0 # In seconds
+    authorizers:
+      serviceAuthorizer:
+        type: jwt
+        identitySource: $request.header.Authorization
+        issuerUrl: ${self:custom.cognitoIssuer}
+        audience:
+          - !Ref UserClient
+
+plugins:
+  - serverless-offline
+
+resources:
+  - ${file(aws/UserPool.yml)}
+  - ${file(aws/UserClient.yml)}
+  - ${file(aws/UserTable.yml)}
+
+package:
+  individually: true
+  patterns:
+    - "!node_modules/**"
+    - "!.git/**"
+    - "!src/**"
+    - "!aws/**"
+    - "!yarn.lock"
+    - "!package.json"
+    - "!README.md"
+
+functions:
+  - ${file(plaid/spec.yml)}
+
+custom:
+  modularize:
+    glob: "src/**/*.module.yml"
+  serverless-offline:
+    httpPort: 8000
+    noAuth: true
+  cognitoIssuer:
+    Fn::Join:
+      - ""
+      - - "https://cognito-idp."
+        - "${aws:region}"
+        - ".amazonaws.com/"
+        - Ref: UserPool
+  integrationResponse:
+    statusCodes:
+      200:
+        pattern: ""
+        template: >
+          #set($origin = $input.params("Origin"))
+          #if($origin == "") #set($origin = $input.params("origin")) #end
+          #if($origin.matches(".+")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end

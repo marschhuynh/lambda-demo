@@ -1,0 +1,9 @@
+{
+  "name": "@plaid-demo/layer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "SLS_DEBUG=* serverless deploy --stage dev"
+  },
+  "license": "MIT"
+}
